@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
         OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
 
-  //      Moshi moshi = new Moshi.Builder().build();
+       // Moshi moshi = new Moshi.Builder().build();
 
 //        retrofit = new Retrofit.Builder()
 //                .baseUrl("https://api.openweathermap.org/data/2.5/")
@@ -70,25 +70,27 @@ public class MainActivity extends AppCompatActivity {
         weatherAPI = retrofit.create(WeatherAPI.class);
 
 
-        Call<List<Weather>> mCall = weatherAPI.getWeather(lat,lon,cnt,myId);
+        Call<APIResponse> mCall = weatherAPI.requestWeather(String.valueOf(lat),String.valueOf(lon),String.valueOf(cnt),myId);
 
-        mCall.enqueue(new Callback<List<Weather>>() {
+        mCall.enqueue(new Callback<APIResponse>() {
             @Override
-            public void onResponse(Call<List<Weather>> call, Response<List<Weather>> response) {
+            public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
 
-                List<Weather> weathers = response.body();
+                List<Weather> weathers = response.body().getWeathers();
 
                 if(weathers!=null){
-                    Log.d("check","OK");
+                    Log.d("API","OK");
 //                    for (Weather weather : weathers) {
 //                      Log.d("weather", weather.getWeather());
 //                    }
+                }else{
+                    Log.d("API","null");
                 }
             }
 
             @Override
-            public void onFailure(Call<List<Weather>> call, Throwable t) {
-                Log.d("check","NG");
+            public void onFailure(Call<APIResponse> call, Throwable t) {
+                Log.d("API","NG");
 
             }
         });

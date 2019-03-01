@@ -9,12 +9,13 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface WeatherAPI {
-    @GET("forecast")
-    Call<List<Weather>> getWeather(
-            @Query("lat") float lat,
-            @Query("lon") float lon,
-            @Query("cnt") int cnt,
+    @GET("forecast?")
+    Call<APIResponse> requestWeather(
+            @Query("lat") String lat,
+            @Query("lon") String lon,
+            @Query("cnt") String cnt,
             @Query("appid") String appid
+
     );
 }
 
