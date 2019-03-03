@@ -1,5 +1,6 @@
 package android.lifeistech.com.okantest;
 
+import java.nio.file.Watchable;
 import java.util.List;
 
 import retrofit2.Call;
@@ -9,8 +10,17 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface WeatherAPI {
-    @GET("forecast?")
-    Call<APIResponse> requestWeather(
+    @GET("data/2.5/forecast?")
+    Call<Weather> requestWeather(
+            @Query("lat") String lat,
+            @Query("lon") String lon,
+            @Query("cnt") String cnt,
+            @Query("appid") String appid
+
+    );
+
+    @GET("data/2.5/forecast?")
+    Call<List<Weather>> requestListWeather(
             @Query("lat") String lat,
             @Query("lon") String lon,
             @Query("cnt") String cnt,

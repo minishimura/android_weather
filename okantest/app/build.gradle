@@ -18,10 +18,6 @@ android {
     }
 }
 
-def retrofit_ver = '2.4.0'
-def moshi_ver = '1.5.0'
-def okhttp3_ver = '3.10.0'
-
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -31,12 +27,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
-    implementation "com.squareup.retrofit2:retrofit:$retrofit_ver"
-    implementation "com.squareup.moshi:moshi:$moshi_ver"
-    implementation "com.squareup.moshi:moshi-kotlin:$moshi_ver"
-    implementation "com.squareup.retrofit2:converter-moshi:$retrofit_ver"
-    implementation "com.squareup.okhttp3:okhttp:$okhttp3_ver"
-    implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
     implementation 'com.google.code.gson:gson:2.8.4'
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
 
 }

@@ -16,8 +16,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.squareup.moshi.Moshi;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -30,7 +28,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.converter.moshi.MoshiConverterFactory;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,50 +48,60 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
-
-       // Moshi moshi = new Moshi.Builder().build();
-
-//        retrofit = new Retrofit.Builder()
-//                .baseUrl("https://api.openweathermap.org/data/2.5/")
-//                .addConverterFactory(MoshiConverterFactory.create(moshi))
-//                .client(okHttpClient)
-//                .build();
-
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.openweathermap.org/data/2.5/")
+                .baseUrl("https://api.openweathermap.org/")
                 .addConverterFactory(GsonConverterFactory.create())
-                .client(okHttpClient)
                 .build();
 
 
         weatherAPI = retrofit.create(WeatherAPI.class);
 
 
-        Call<APIResponse> mCall = weatherAPI.requestWeather(String.valueOf(lat),String.valueOf(lon),String.valueOf(cnt),myId);
+        Call<Weather> mCall = weatherAPI.requestWeather(String.valueOf(lat),String.valueOf(lon),String.valueOf(cnt),myId);
 
-        mCall.enqueue(new Callback<APIResponse>() {
+        mCall.enqueue(new Callback<Weather>() {
             @Override
-            public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
+            public void onResponse(Call<Weather> call, Response<Weather> response) {
 
-                List<Weather> weathers = response.body().getWeathers();
+                Weather weatherList = response.body();
 
-                if(weathers!=null){
-                    Log.d("API","OK");
-//                    for (Weather weather : weathers) {
-//                      Log.d("weather", weather.getWeather());
-//                    }
+                if(weatherList!=null){
+                    Log.d("Cod",weatherList.getCod());
+
                 }else{
                     Log.d("API","null");
                 }
             }
 
             @Override
-            public void onFailure(Call<APIResponse> call, Throwable t) {
+            public void onFailure(Call<Weather> call, Throwable t) {
                 Log.d("API","NG");
-
             }
         });
+
+//        Call<List<Weather>> mCall = weatherAPI.requestListWeather(String.valueOf(lat),String.valueOf(lon),String.valueOf(cnt),myId);
+//
+//        mCall.enqueue(new Callback<List<Weather>>() {
+//            @Override
+//            public void onResponse(Call<List<Weather>> call, Response<List<Weather>> response) {
+//
+//                List<Weather> weatherList = response.body();
+//
+//                if(weatherList!=null){
+//                    for(Weather w : weatherList){
+//                        Log.d("item",w.getCod());
+//                    }
+//
+//                }else{
+//                    Log.d("API","null");
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<Weather>> call, Throwable t) {
+//                Log.d("API","NG");
+//            }
+//        });
 
         if(rain){
             notif();

@@ -1,24 +1,16 @@
 package android.lifeistech.com.okantest;
 
 import com.google.gson.annotations.SerializedName;
-import com.squareup.moshi.Json;
+
 
 public class Weather {
 
-    //@Json(name="name")
-    @SerializedName("dt_txt")
-    private String dt_txt;
+    @SerializedName("cod")
+    private String cod;
 
-//    public Weather(String weather){
-//        super();
-//        this.weather = weather;
-//    }
-
-    public String getWeather() {
-        return dt_txt;
+    public String getCod() {
+        return cod;
     }
-
-
 
 }
 
