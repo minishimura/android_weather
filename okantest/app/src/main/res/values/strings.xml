@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">okantest</string>
+    <string name="rain">今日は雨だよ</string>
+    <string name="sun">今日は晴れだよ</string>
 </resources>

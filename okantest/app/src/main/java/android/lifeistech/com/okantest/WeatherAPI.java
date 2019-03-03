@@ -10,17 +10,10 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface WeatherAPI {
-    @GET("data/2.5/forecast?")
-    Call<Weather> requestWeather(
-            @Query("lat") String lat,
-            @Query("lon") String lon,
-            @Query("cnt") String cnt,
-            @Query("appid") String appid
 
-    );
 
     @GET("data/2.5/forecast?")
-    Call<List<Weather>> requestListWeather(
+    Call<WeatherList> requestListWeather(
             @Query("lat") String lat,
             @Query("lon") String lon,
             @Query("cnt") String cnt,
