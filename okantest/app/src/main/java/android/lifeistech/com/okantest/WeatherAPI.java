@@ -18,7 +18,6 @@ public interface WeatherAPI {
             @Query("lon") String lon,
             @Query("cnt") String cnt,
             @Query("appid") String appid
-
     );
 }
 

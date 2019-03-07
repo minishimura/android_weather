@@ -1,18 +1,24 @@
 package android.lifeistech.com.okantest;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
+import android.os.IBinder;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -40,22 +46,44 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public String myId = "560565efd16ecd03e4fa586ec6aed1f4";
     public int cnt = 5;
 
-    public float mlat;
-    public float mlon;
+    public float lat;
+    public float lon;
 
     private WeatherAPI weatherAPI;
     private Retrofit retrofit;
 
     public boolean rain = false;
 
-    @Override
+    private Intent serviceIntent;
+    private IMyService binder;
+
+    private boolean b;
+
+    private ServiceConnection connection = new ServiceConnection() {
+        //サービスコネクション生成（サービス接続/非接続の時の処理）
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            //IMyServiceオブジェクト取得
+            binder = IMyService.Stub.asInterface(service);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            binder = null;
+        }
+    };
+
+        @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        serviceIntent = new Intent(this,NewService.class);
+        startService(serviceIntent);
+        b=getApplication().bindService(serviceIntent,connection,BIND_AUTO_CREATE);
+        //Log.d("monkey", String.valueOf(b));
 
-
-        retrofit = new Retrofit.Builder()
+            retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.openweathermap.org/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -87,10 +115,21 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
     }
 
+    private boolean isServiceRunning(String className){
+        ActivityManager am = (ActivityManager)getSystemService(ACTIVITY_SERVICE);
+        List<ActivityManager.RunningServiceInfo> serviceInfos = am.getRunningServices(Integer.MAX_VALUE);
+        for(int i=0;i < serviceInfos.size();i++){
+            if(serviceInfos.get(i).service.getClassName().equals(className)){
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public void notif() {
         NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
+                new NotificationCompat.Builder(this,"test")
                         .setSmallIcon(android.R.drawable.star_on)
                         .setContentTitle("My notification")
                         .setContentText("Hello World!");
@@ -102,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     }
 
+
     public void getAPI(float lat,float lon) {
 
         Call<WeatherList> mCall = weatherAPI.requestListWeather(String.valueOf(lat), String.valueOf(lon), String.valueOf(cnt), myId);
@@ -109,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         mCall.enqueue(new Callback<WeatherList>() {
 
             TextView textView = (TextView)findViewById(R.id.word);
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onResponse(Call<WeatherList> call, Response<WeatherList> response) {
 
@@ -143,15 +184,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 Log.d("API", "NG");
             }
         });
-
     }
-
 
     @Override
     public void onLocationChanged(Location location) {
-        mlat = (float)location.getLatitude();
-        mlon = (float)location.getLongitude();
-        getAPI(mlat,mlon);
+        lat = (float)location.getLatitude();
+        lon = (float)location.getLongitude();
+        getAPI(lat,lon);
+        //Log.d("UI",String.valueOf(isCurrent()));
+
     }
 
     @Override
@@ -167,6 +208,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    private boolean isCurrent(){
+        return Thread.currentThread().equals(getMainLooper().getThread());
     }
 }
 
