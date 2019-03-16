@@ -3,6 +3,7 @@ package android.lifeistech.com.okantest;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -14,6 +15,8 @@ public class NewAppWidget extends AppWidgetProvider {
 
     static SharedPreferences mpref;
     static String mWeather;
+    static String[] weather;
+    static boolean isRain = false;
 
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
@@ -21,8 +24,42 @@ public class NewAppWidget extends AppWidgetProvider {
             new SharedPreferences.OnSharedPreferenceChangeListener() {
                 public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
                     if(key.equals("weather")){
-                        mWeather = pref.getString("weather","s");
-                        Log.d("test2",mWeather);
+                        mWeather = mpref.getString("weather","s");
+                        if(mWeather != null && mWeather.length() != 0){
+                             weather =  mWeather.split(",");
+                        }else{
+                             weather = null;
+                        }
+                        Log.d("array1",String.valueOf(weather[0]));
+                        if(weather[0].equals("rain")){
+                            isRain = true;
+
+                        }
+                        if(weather[1].equals("rain")){
+                            isRain = true;
+
+                        }
+                        if(weather[2].equals("rain")){
+                            isRain = true;
+
+                        }
+                        if(weather[3].equals("rain")){
+                            isRain = true;
+
+                        }
+                        if(weather[4].equals("rain")){
+                            isRain = true;
+
+                        }
+
+                        Log.d("array2",String.valueOf(weather[1]));
+                        Log.d("array2",String.valueOf(weather[2]));
+                        Log.d("array2",String.valueOf(weather[3]));
+                        Log.d("array2",String.valueOf(weather[4]));
+
+
+
+
                     }
                 }
             };
@@ -60,5 +97,6 @@ public class NewAppWidget extends AppWidgetProvider {
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
     }
+
 }
 

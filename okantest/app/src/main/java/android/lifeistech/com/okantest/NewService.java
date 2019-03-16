@@ -58,10 +58,13 @@ public class NewService extends Service implements LocationListener {
 
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
+    public String stringItem;
+
 
     @Override
     public void onCreate(){
         //サービス生成時
+        //ニヤニヤしてます！（通報）
         super.onCreate();
                     retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.openweathermap.org/")
@@ -175,31 +178,23 @@ public class NewService extends Service implements LocationListener {
             @Override
             public void onResponse(Call<WeatherList> call, Response<WeatherList> response) {
 
+
                 List<WeatherList.ListA> weatherList = response.body().getList();
+                editor.clear().commit();
                 if (weatherList != null) {
+                    StringBuffer buffer = new StringBuffer();
                     for (WeatherList.ListA l : weatherList) {
                         List<WeatherList.ListA.Weather> weather = l.getWeathers();
-
-                        editor.clear().commit();
                         for (WeatherList.ListA.Weather w : weather) {
-                            //Log.d("test", w.getMain());
-                            editor.putString("weather",w.getMain()).commit();
-                            if (Objects.equals(w.getMain(), "Rain")) {
-                                rain = true;
-                            }
+                            buffer.append(w.getMain() + ",");
                         }
-                    }
-                } else {
+                    }String buf = buffer.toString();
+                    stringItem = buf.substring(0, buf.length() - 1);
+                    editor.putString("weather",stringItem).commit();
+                    Log.d("buffer",stringItem);
+
+                    } else {
                     Log.d("API", "null");
-                }
-                if (rain) {
-                    remoteViews.setTextViewText(R.id.testText,"rain");
-                    Log.d("testText","rain");
-
-                } else {
-                    remoteViews.setTextViewText(R.id.testText, "notRain");
-                    Log.d("testText","notrain");
-
                 }
             }
 
@@ -216,11 +211,9 @@ public class NewService extends Service implements LocationListener {
 
             @Override
     public void onLocationChanged(Location location) {
-                lat = (float)location.getLatitude();
+        lat = (float)location.getLatitude();
         lon = (float)location.getLongitude();
         getAPI(lat,lon);
-        Log.d("test",String.valueOf(lat));
-        Log.d("test",String.valueOf(lon));
     }
 
     @Override

@@ -50,21 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private IMyService binder;
 
     private boolean b;
-
-    SharedPreferences pref;
-
-    private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
-
-//    SharedPreferences.OnSharedPreferenceChangeListener listener =
-//            new SharedPreferences.OnSharedPreferenceChangeListener() {
-//                public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
-//                    if(key.equals("weather")){
-//                        String a = pref.getString("weather","s");
-//                        Log.d("test2",a);
-//                    }
-//                }
-//            };
-
+    private boolean rain;
 
 
     private ServiceConnection connection = new ServiceConnection() {
@@ -87,7 +73,15 @@ public class MainActivity extends AppCompatActivity {
 
             setContentView(R.layout.activity_main);
 
-            pref = getSharedPreferences("pref_weather"+ mAppWidgetId,MODE_PRIVATE);
+            TextView textView = (TextView)findViewById(R.id.word) ;
+            rain = NewAppWidget.isRain;
+            if(rain){
+                textView.setText(R.string.rain);
+            }else{
+                textView.setText(R.string.sun);
+            }
+
+            NewAppWidget.isRain = false;
 
             serviceIntent = new Intent(this, NewService.class);
             startService(serviceIntent);
@@ -97,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onResume(){
             super.onResume();
-            //pref.registerOnSharedPreferenceChangeListener(listener);
         }
 
 
