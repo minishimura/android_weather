@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +24,7 @@ import android.os.RemoteException;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +56,8 @@ public class NewService extends Service implements LocationListener {
 
     SharedPreferences pref;
 
+    private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
+
 
     @Override
     public void onCreate(){
@@ -64,9 +68,8 @@ public class NewService extends Service implements LocationListener {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-
-        weatherAPI = retrofit.create(WeatherAPI.class);
-        pref = getSharedPreferences("pref_weather",MODE_PRIVATE);
+                    weatherAPI = retrofit.create(WeatherAPI.class);
+        pref = getSharedPreferences("pref_weather"+ mAppWidgetId ,MODE_PRIVATE);
 
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         Criteria criteria = new Criteria();
@@ -87,9 +90,6 @@ public class NewService extends Service implements LocationListener {
 
         locationManager.requestLocationUpdates(provider, 10000, 0, this);
 
-        if (rain) {
-            //notif();
-        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -165,43 +165,41 @@ public class NewService extends Service implements LocationListener {
     public void getAPI(float lat,float lon) {
 
         final SharedPreferences.Editor editor = pref.edit();
+        final RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.new_app_widget);
 
         Call<WeatherList> mCall = weatherAPI.requestListWeather(String.valueOf(lat), String.valueOf(lon), String.valueOf(cnt), myId);
 
         mCall.enqueue(new Callback<WeatherList>() {
 
-            //TextView textView = (TextView)findViewById(R.id.word);
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onResponse(Call<WeatherList> call, Response<WeatherList> response) {
 
                 List<WeatherList.ListA> weatherList = response.body().getList();
-
-
                 if (weatherList != null) {
                     for (WeatherList.ListA l : weatherList) {
                         List<WeatherList.ListA.Weather> weather = l.getWeathers();
 
                         editor.clear().commit();
-
-
                         for (WeatherList.ListA.Weather w : weather) {
-                            Log.d("test", w.getMain());
+                            //Log.d("test", w.getMain());
                             editor.putString("weather",w.getMain()).commit();
                             if (Objects.equals(w.getMain(), "Rain")) {
                                 rain = true;
                             }
                         }
                     }
-
                 } else {
                     Log.d("API", "null");
                 }
                 if (rain) {
-                    //textView.setText(R.string.rain);
-                    //notif();
+                    remoteViews.setTextViewText(R.id.testText,"rain");
+                    Log.d("testText","rain");
+
                 } else {
-                    //textView.setText(R.string.sun);
+                    remoteViews.setTextViewText(R.id.testText, "notRain");
+                    Log.d("testText","notrain");
+
                 }
             }
 
@@ -210,6 +208,9 @@ public class NewService extends Service implements LocationListener {
 
             }
         });
+        ComponentName thisWidget = new ComponentName(this, NewAppWidget.class);
+        AppWidgetManager manager = AppWidgetManager.getInstance(this);
+        manager.updateAppWidget(thisWidget, remoteViews);
     }
 
 

@@ -6,6 +6,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
+import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -52,6 +53,18 @@ public class MainActivity extends AppCompatActivity {
 
     SharedPreferences pref;
 
+    private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
+
+//    SharedPreferences.OnSharedPreferenceChangeListener listener =
+//            new SharedPreferences.OnSharedPreferenceChangeListener() {
+//                public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
+//                    if(key.equals("weather")){
+//                        String a = pref.getString("weather","s");
+//                        Log.d("test2",a);
+//                    }
+//                }
+//            };
+
 
 
     private ServiceConnection connection = new ServiceConnection() {
@@ -71,9 +84,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
     public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+
             setContentView(R.layout.activity_main);
 
-            pref = getSharedPreferences("pref_weather",MODE_PRIVATE);
+            pref = getSharedPreferences("pref_weather"+ mAppWidgetId,MODE_PRIVATE);
 
             serviceIntent = new Intent(this, NewService.class);
             startService(serviceIntent);
@@ -83,8 +97,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onResume(){
             super.onResume();
-            String a = pref.getString("weather","s");
-            Log.d("test2",a);
+            //pref.registerOnSharedPreferenceChangeListener(listener);
         }
 
 
