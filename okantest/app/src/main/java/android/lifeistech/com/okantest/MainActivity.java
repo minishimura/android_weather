@@ -20,13 +20,18 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
+import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -67,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
         @Override
     public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -75,8 +81,10 @@ public class MainActivity extends AppCompatActivity {
 
             TextView textView = (TextView)findViewById(R.id.word) ;
             rain = NewAppWidget.isRain;
+            //rain=true;
             if(rain){
                 textView.setText(R.string.rain);
+                showNotification(this, "From　母", "傘忘れたらあかんで〜");
             }else{
                 textView.setText(R.string.sun);
             }
@@ -94,20 +102,25 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-    public void notif() {
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this,"test")
-                        .setSmallIcon(android.R.drawable.star_on)
-                        .setContentTitle("My notification")
-                        .setContentText("Hello World!");
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    private void showNotification(Context context, String title, String text){
+        Notification.Builder builder = new Notification.Builder(context);
+        builder.setWhen(System.currentTimeMillis());
+        builder.setContentTitle(title);
+        builder.setContentText(text);
+        builder.setSmallIcon(R.mipmap.ic_launcher);
 
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setComponent(new ComponentName("android.lifeistech.com.okantest","android.lifeistech.com.okantest.MainActivity"));
+        intent.removeCategory(Intent.CATEGORY_DEFAULT);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        builder.setContentIntent(PendingIntent.getActivity(context,0,intent,PendingIntent.FLAG_CANCEL_CURRENT));
 
-        mNotificationManager.notify(1, mBuilder.build());
-
+        NotificationManager nm = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.cancel(1);
+        nm.notify(1,builder.build());
     }
-
 }
 
 

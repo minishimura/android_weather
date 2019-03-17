@@ -4,28 +4,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#f5f5dc"
     tools:context=".MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="20dp">
 
         <ImageView
-            android:layout_width="325dp"
-            android:layout_height="312dp"
+            android:id="@+id/gifView"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
             android:layout_gravity="center"
-            android:src="@drawable/test" />
+            android:layout_weight="9"
+            android:background="#f5f5dc"
+            android:src="@drawable/okan1" />
+
+        <!--<VideoView-->
+            <!--android:id="@+id/gifVideo"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content" />-->
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="0dp"
+            android:layout_weight="5"
+            android:padding="10dp">
 
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
+                android:background="#f5f5dc"
                 app:srcCompat="@drawable/hukudasi" />
 
             <TextView

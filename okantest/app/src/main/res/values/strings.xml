@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">okantest</string>
-    <string name="rain">今日は雨やで！傘持って行きな〜</string>
-    <string name="sun">今日は晴れや！洗濯日和やな〜</string>
+    <string name="rain">今日は雨やで！\n傘持って行きな〜</string>
+    <string name="sun">今日は晴れや!\n洗濯日和やな〜</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
 </resources>

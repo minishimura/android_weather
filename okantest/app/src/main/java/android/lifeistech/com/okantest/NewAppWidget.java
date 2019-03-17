@@ -15,10 +15,18 @@ public class NewAppWidget extends AppWidgetProvider {
 
     static SharedPreferences mpref;
     static String mWeather;
-    static String[] weather;
+    static String[] weather8;
     static boolean isRain = false;
+    static boolean f03;
+    static boolean f36;
+    static boolean f69;
+    static boolean f912;
+    static boolean f1215;
+    static boolean f1518;
+    static boolean f1821;
+    static boolean f2124;
 
-    private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
+    static int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
     static SharedPreferences.OnSharedPreferenceChangeListener listener =
             new SharedPreferences.OnSharedPreferenceChangeListener() {
@@ -26,39 +34,42 @@ public class NewAppWidget extends AppWidgetProvider {
                     if(key.equals("weather")){
                         mWeather = mpref.getString("weather","s");
                         if(mWeather != null && mWeather.length() != 0){
-                             weather =  mWeather.split(",");
+                             weather8 =  mWeather.split(",");
                         }else{
-                             weather = null;
+                             weather8 = null;
                         }
-                        Log.d("array1",String.valueOf(weather[0]));
-                        if(weather[0].equals("rain")){
+                        if(weather8[0].equals("rain")){
                             isRain = true;
-
+                            f03 = true;
                         }
-                        if(weather[1].equals("rain")){
+                        if(weather8[1].equals("rain")){
                             isRain = true;
-
+                            f36 = true;
                         }
-                        if(weather[2].equals("rain")){
+                        if(weather8[2].equals("rain")){
                             isRain = true;
-
+                            f69 = true;
                         }
-                        if(weather[3].equals("rain")){
+                        if(weather8[3].equals("rain")){
                             isRain = true;
-
+                            f912 = true;
                         }
-                        if(weather[4].equals("rain")){
+                        if(weather8[4].equals("rain")){
                             isRain = true;
-
+                            f1215 = true;
                         }
-
-                        Log.d("array2",String.valueOf(weather[1]));
-                        Log.d("array2",String.valueOf(weather[2]));
-                        Log.d("array2",String.valueOf(weather[3]));
-                        Log.d("array2",String.valueOf(weather[4]));
-
-
-
+                        if(weather8[5].equals("rain")){
+                            isRain = true;
+                            f1518 = true;
+                        }
+                        if(weather8[6].equals("rain")){
+                            isRain = true;
+                            f1821 = true;
+                        }
+                        if(weather8[7].equals("rain")) {
+                            isRain = true;
+                            f2124 = true;
+                        }
 
                     }
                 }
@@ -66,12 +77,29 @@ public class NewAppWidget extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
-        //mpref.registerOnSharedPreferenceChangeListener(listener);
 
-        CharSequence widgetText = context.getString(R.string.appwidget_text);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.new_app_widget);
 
+        if(f03&&f36&&f69&&f912&&f1215&&f1518&&f1821&&f2124){
+            views.setImageViewResource(R.id.widgetImage,R.drawable.widall);
+        }else if(f03&&f36&&f69&&f912&&f1518){
+            views.setImageViewResource(R.id.widgetImage,R.drawable.wid018);
+        }else if(f1215&&f1518&&f1821&&f2124){
+            views.setImageViewResource(R.id.widgetImage,R.drawable.wid120);
+        }
+
+        else if(f03&&f36&&f69&&f912){
+            views.setImageViewResource(R.id.widgetImage,R.drawable.wid012);
+        }else if(f03&&f36){
+            views.setImageViewResource(R.id.widgetImage,R.drawable.wid06);
+        }else if(f03){
+            views.setImageViewResource(R.id.widgetImage,R.drawable.wid03);
+        }else if(f1215){
+            views.setImageViewResource(R.id.widgetImage,R.drawable.wid1215);
+        }else{
+            views.setImageViewResource(R.id.widgetImage,R.drawable.widsun2);
+        }
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);

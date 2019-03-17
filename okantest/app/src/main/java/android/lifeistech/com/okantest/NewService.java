@@ -44,15 +44,13 @@ public class NewService extends Service implements LocationListener {
     private String message = "Message";
 
     public String myId = "560565efd16ecd03e4fa586ec6aed1f4";
-    public int cnt = 5;
+    public int cnt = 8;
 
     public float lat;
     public float lon;
 
     private WeatherAPI weatherAPI;
     private Retrofit retrofit;
-
-    public boolean rain = false;
 
     SharedPreferences pref;
 
@@ -100,7 +98,6 @@ public class NewService extends Service implements LocationListener {
         //サービス開始時
         super.onStartCommand(intent, flags, startId);
 
-        showNotification(this, "a", "a");
         Thread thread = new Thread() {
             public void run() {
                 running = true;
@@ -108,7 +105,7 @@ public class NewService extends Service implements LocationListener {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            toast(NewService.this, message);
+                           // toast(NewService.this, message);
                         }
                     });
                     try {
@@ -131,26 +128,6 @@ public class NewService extends Service implements LocationListener {
     @Override
     public IBinder onBind(Intent intent) {
         return IMyServiceBinder;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    private void showNotification(Context context, String title, String text){
-        Notification.Builder builder = new Notification.Builder(context);
-        builder.setWhen(System.currentTimeMillis());
-        builder.setContentTitle(title);
-        builder.setContentText(text);
-        builder.setSmallIcon(R.mipmap.ic_launcher);
-
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setComponent(new ComponentName("android.lifeistech.com.okantest","android.lifeistech.com.okantest.MainActivity"));
-        intent.removeCategory(Intent.CATEGORY_DEFAULT);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        builder.setContentIntent(PendingIntent.getActivity(context,0,intent,PendingIntent.FLAG_CANCEL_CURRENT));
-
-        NotificationManager nm = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.cancel(1);
-        nm.notify(1,builder.build());
     }
 
     private static void toast(Context context,String text){
@@ -191,10 +168,10 @@ public class NewService extends Service implements LocationListener {
                     }String buf = buffer.toString();
                     stringItem = buf.substring(0, buf.length() - 1);
                     editor.putString("weather",stringItem).commit();
-                    Log.d("buffer",stringItem);
+                    //Log.d("buffer",stringItem);
 
                     } else {
-                    Log.d("API", "null");
+                    //Log.d("API", "null");
                 }
             }
 
